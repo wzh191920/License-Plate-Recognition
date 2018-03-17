@@ -59,7 +59,7 @@ class Surface(ttk.Frame):
 		if wide > self.viewwide or high > self.viewhigh:
 			wide_factor = self.viewwide / wide
 			high_factor = self.viewhigh / high
-			factor = max(wide_factor, high_factor)
+			factor = min(wide_factor, high_factor)
 			wide = int(wide * factor)
 			if wide <= 0 : wide = 1
 			high = int(high * factor)
