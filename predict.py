@@ -503,6 +503,7 @@ class CardPredictor:
 					if np.mean(part_card) < 255/5:
 						print("a point")
 						continue
+					part_card_old = part_card
 					w = abs(part_card.shape[1] - SZ)//2
 					
 					part_card = cv2.copyMakeBorder(part_card, 0, 0, w, w, cv2.BORDER_CONSTANT, value = [0,0,0])
@@ -518,7 +519,7 @@ class CardPredictor:
 						charactor = chr(resp[0])
 					#判断最后一个数是否是车牌边缘，假设车牌边缘被认为是1
 					if charactor == "1" and i == len(part_cards)-1:
-						if wave_peaks[i][0] - wave_peaks[i-1][1] <= (wave_peaks[1][0] - wave_peaks[0][1])*1.3:#数字1与前一个字符太近，视为车牌边缘
+						if part_card_old.shape[0]/part_card_old.shape[1] >= 7:#1太细，认为是边缘
 							continue
 					predict_result.append(charactor)
 				roi = card_img
@@ -530,6 +531,6 @@ class CardPredictor:
 if __name__ == '__main__':
 	c = CardPredictor()
 	c.train_svm()
-	r, roi, color = c.predict("phone8.jpg")
+	r, roi, color = c.predict("黑A16341.jpg")
 	print(r)
 	
