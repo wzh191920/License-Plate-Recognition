@@ -274,7 +274,10 @@ class CardPredictor:
 		img_edge2 = cv2.morphologyEx(img_edge1, cv2.MORPH_OPEN, kernel)
 
 		#查找图像边缘整体形成的矩形区域，可能有很多，车牌就在其中一个矩形区域中
-		image, contours, hierarchy = cv2.findContours(img_edge2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		try:
+			contours, hierarchy = cv2.findContours(img_edge2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		except ValueError:
+			image, contours, hierarchy = cv2.findContours(img_edge2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		contours = [cnt for cnt in contours if cv2.contourArea(cnt) > Min_Area]
 		print('len(contours)', len(contours))
 		#一一排除不是车牌的矩形区域
