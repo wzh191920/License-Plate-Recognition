@@ -108,7 +108,7 @@ class Surface(ttk.Frame):
 			img_bgr = predict.imreadex(self.pic_path)
 			self.imgtk = self.get_imgtk(img_bgr)
 			self.image_ctl.configure(image=self.imgtk)
-			resize_rates = (1, 0.8, 0.6, 0.5, 0.4)
+			resize_rates = (1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4)
 			for resize_rate in resize_rates:
 				print("resize_rate:", resize_rate)
 				r, roi, color = self.predictor.predict(img_bgr, resize_rate)

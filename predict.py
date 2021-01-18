@@ -246,9 +246,12 @@ class CardPredictor:
 		else:
 			img = car_pic
 		pic_hight, pic_width = img.shape[:2]
+		if pic_width > MAX_WIDTH:
+			pic_rate = MAX_WIDTH / pic_width
+			img = cv2.resize(img, (MAX_WIDTH, int(pic_hight*pic_rate)), interpolation=cv2.INTER_LANCZOS4)
 		
 		if resize_rate != 1:
-			img = cv2.resize(img, (int(pic_width*resize_rate), int(pic_hight*resize_rate)), interpolation=cv2.INTER_AREA)
+			img = cv2.resize(img, (int(pic_width*resize_rate), int(pic_hight*resize_rate)), interpolation=cv2.INTER_LANCZOS4)
 			pic_hight, pic_width = img.shape[:2]
 			
 		print("h,w:", pic_hight, pic_width)
@@ -274,7 +277,10 @@ class CardPredictor:
 		img_edge2 = cv2.morphologyEx(img_edge1, cv2.MORPH_OPEN, kernel)
 
 		#查找图像边缘整体形成的矩形区域，可能有很多，车牌就在其中一个矩形区域中
-		image, contours, hierarchy = cv2.findContours(img_edge2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		try:
+			contours, hierarchy = cv2.findContours(img_edge2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		except ValueError:
+			image, contours, hierarchy = cv2.findContours(img_edge2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		contours = [cnt for cnt in contours if cv2.contourArea(cnt) > Min_Area]
 		print('len(contours)', len(contours))
 		#一一排除不是车牌的矩形区域
